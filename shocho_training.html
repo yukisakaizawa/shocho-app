@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職長への道｜内装塗装トレーニング</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1209;
+    --paper: #f5f0e8;
+    --accent: #c44d2e;
+    --gold: #b8860b;
+    --muted: #8a7f72;
+    --surface: #ede8de;
+    --border: #d4c9b0;
+    --green: #3a6b3a;
+    --phase1: #4a6fa5;
+    --phase2: #c44d2e;
+    --phase3: #3a6b3a;
+    --phase4: #b8860b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 24px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--accent);
+  }
+  header .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+  header h1 span {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 2px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .streak-badge {
+    background: var(--accent);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .streak-badge .num { font-size: 20px; display: block; line-height: 1; }
+
+  /* PROGRESS BAR */
+  .progress-section {
+    background: var(--surface);
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+  .phase-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .phase-dot {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.5;
+  }
+  .phase-dot.active { opacity: 1; }
+  .phase-dot.p1 { background: #dde6f0; color: var(--phase1); }
+  .phase-dot.p2 { background: #f5e0db; color: var(--phase2); }
+  .phase-dot.p3 { background: #daeada; color: var(--phase3); }
+  .phase-dot.p4 { background: #f5eed8; color: var(--phase4); }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    background: var(--ink);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex: 1;
+    min-width: 64px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .nav-tab .icon { font-size: 16px; display: block; margin-bottom: 2px; }
+  .nav-tab.active {
+    color: white;
+    border-bottom-color: var(--accent);
+  }
+  .nav-tab:hover:not(.active) { color: #ccc; }
+
+  /* MAIN */
+  main { padding: 0 0 80px; }
+
+  .section { display: none; padding: 20px 20px; }
+  .section.active { display: block; }
+
+  /* TODAY SECTION */
+  .today-date {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .daily-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .daily-card-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-phase-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .daily-card-body {
+    padding: 14px 16px;
+  }
+  .daily-card-body p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .task-list { list-style: none; }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ece4;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .task-item.done .task-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .task-item.done .task-check::after { content: '✓'; font-size: 13px; font-weight: 700; }
+  .task-text { font-size: 13px; line-height: 1.6; }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--muted); }
+
+  .quiz-section {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 14px;
+    margin-top: 4px;
+  }
+  .quiz-q {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-opt {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    line-height: 1.5;
+  }
+  .quiz-opt:hover { border-color: var(--accent); background: #fdf8f5; }
+  .quiz-opt.correct { border-color: var(--green); background: #edf7ed; color: var(--green); font-weight: 700; }
+  .quiz-opt.wrong { border-color: var(--accent); background: #fdf0ed; color: var(--accent); }
+  .quiz-result {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .quiz-result.ok { background: #edf7ed; color: var(--green); }
+  .quiz-result.ng { background: #fdf0ed; color: var(--accent); }
+
+  /* ROADMAP */
+  .phase-section {
+    margin-bottom: 24px;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  .phase-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+    flex-shrink: 0;
+  }
+  .phase-info h3 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .phase-info p { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .skill-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: white;
+    border: 1px solid var(--border);
+  }
+  .skill-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .skill-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .skill-body p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* KNOWLEDGE */
+  .knowledge-cat {
+    margin-bottom: 20px;
+  }
+  .knowledge-cat h3 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    margin-bottom: 8px;
+    border-radius: 0 4px 4px 0;
+  }
+  .knowledge-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .knowledge-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .knowledge-item-header h4 { font-size: 13px; font-weight: 700; }
+  .knowledge-toggle { color: var(--muted); font-size: 14px; transition: transform 0.2s; }
+  .knowledge-item.open .knowledge-toggle { transform: rotate(180deg); }
+  .knowledge-body {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    line-height: 1.9;
+    color: #444;
+  }
+  .knowledge-item.open .knowledge-body { display: block; }
+  .knowledge-body ul { padding-left: 16px; }
+  .knowledge-body li { margin-bottom: 4px; }
+  .knowledge-body strong { color: var(--ink); }
+
+  /* NOTES */
+  .note-area {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .note-area-header {
+    background: var(--surface);
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .note-textarea {
+    width: 100%;
+    min-height: 140px;
+    border: none;
+    padding: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    line-height: 1.8;
+    resize: vertical;
+    background: white;
+    color: var(--ink);
+  }
+  .note-textarea:focus { outline: none; }
+  .note-save-btn {
+    display: block;
+    width: calc(100% - 28px);
+    margin: 0 14px 14px;
+    padding: 10px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .note-save-btn:hover { background: var(--accent); }
+  .saved-notes { margin-top: 0; }
+  .saved-note-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .saved-note-meta {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .saved-note-text { font-size: 12px; line-height: 1.8; white-space: pre-wrap; }
+
+  /* COMMON */
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 17px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* STRATEGY */
+  .strat-timeline { display: flex; flex-direction: column; gap: 0; }
+
+  .strat-phase {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .strat-phase-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 10px;
+  }
+  .strat-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
+    flex-shrink: 0;
+    font-family: 'Noto Serif JP', serif;
+  }
+  .sp1 .strat-num { background: var(--phase1); }
+  .sp2 .strat-num { background: var(--phase2); }
+  .sp3 .strat-num { background: var(--phase3); }
+  .sp4 .strat-num { background: var(--phase4); }
+
+  .strat-phase-info h3 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .strat-period {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .strat-goal-tag {
+    margin: 0 16px 10px;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .strat-people {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 16px 10px;
+  }
+  .person-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #dde6f0;
+    color: var(--phase1);
+    letter-spacing: 0.04em;
+  }
+  .person-badge.ext {
+    background: #daeada;
+    color: var(--green);
+  }
+
+  .strat-actions {
+    padding: 4px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .strat-action-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border-radius: 7px;
+    align-items: flex-start;
+  }
+  .strat-action-item.warning-item {
+    background: #fff5f3;
+    border-left: 3px solid var(--accent);
+  }
+  .strat-action-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .strat-action-item strong { font-size: 12px; font-weight: 700; display: block; margin-bottom: 3px; }
+  .strat-action-item p { font-size: 11px; color: #555; line-height: 1.7; margin: 0; }
+
+  .strat-arrow {
+    text-align: center;
+    font-size: 20px;
+    color: var(--muted);
+    padding: 4px 0;
+  }
+
+  .strat-check-section {
+    margin-top: 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .strat-check-title {
+    padding: 12px 16px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--ink);
+    color: white;
+    border-bottom: 2px solid var(--accent);
+  }
+  .strat-check-list { list-style: none; padding: 8px 16px 12px; }
+  .strat-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ece4;
+    cursor: pointer;
+  }
+  .strat-check-item:last-child { border-bottom: none; }
+  .strat-check-item.done .task-check { background: var(--gold); border-color: var(--gold); color: white; }
+  .strat-check-item.done .task-check::after { content: '✓'; font-size: 13px; font-weight: 700; }
+  .strat-check-item.done .task-text { text-decoration: line-through; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top-row">
+    <h1>
+      <span>内装塗装　職長への道</span>
+      職長育成トレーニング
+    </h1>
+    <div class="streak-badge">
+      <span class="num" id="streakNum">1</span>
+      日継続中
+    </div>
+  </div>
+</header>
+
+<div class="progress-section">
+  <div class="progress-label">
+    <span>全体進捗</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="phase-dots">
+    <span class="phase-dot p1 active">Phase 1 基礎</span>
+    <span class="phase-dot p2">Phase 2 現場</span>
+    <span class="phase-dot p3">Phase 3 管理</span>
+    <span class="phase-dot p4">Phase 4 職長</span>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showSection('today')" id="tab-today">
+    <span class="icon">📅</span>今日
+  </div>
+  <div class="nav-tab" onclick="showSection('roadmap')" id="tab-roadmap">
+    <span class="icon">🗺️</span>ロード<br>マップ
+  </div>
+  <div class="nav-tab" onclick="showSection('knowledge')" id="tab-knowledge">
+    <span class="icon">📖</span>知識
+  </div>
+  <div class="nav-tab" onclick="showSection('notes')" id="tab-notes">
+    <span class="icon">✏️</span>メモ
+  </div>
+  <div class="nav-tab" onclick="showSection('strategy')" id="tab-strategy">
+    <span class="icon">🎯</span>戦略
+  </div>
+</div>
+
+<main>
+
+<!-- TODAY -->
+<div class="section active" id="today">
+  <p class="today-date" id="todayDate"></p>
+
+  <div class="daily-card">
+    <div class="daily-card-header">
+      <span class="card-phase-tag p1" style="background:#dde6f0;color:var(--phase1)">Phase 1</span>
+      <span class="card-title">今日の学習テーマ</span>
+    </div>
+    <div class="daily-card-body">
+      <p>🎯 <strong>内装塗装の基礎知識と材料理解</strong><br>職長として現場を仕切るには、まず材料と工程を誰よりも正確に理解することが大前提です。今日は基礎から固めましょう。</p>
+      <ul class="task-list" id="taskList">
+        <li class="task-item" onclick="toggleTask(this)">
+          <div class="task-check"></div>
+          <span class="task-text">📘 水性塗料と油性塗料の違いをノートにまとめる（乾燥時間・希釈方法・使用場所）</span>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <div class="task-check"></div>
+          <span class="task-text">🔍 現場で使っているパテ（下地調整材）の製品名・用途を3種類書き出す</span>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <div class="task-check"></div>
+          <span class="task-text">👁️ 先輩職人の作業を見て「なぜその順番なのか」を1つ質問する</span>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <div class="task-check"></div>
+          <span class="task-text">⏱️ 自分の作業タイムを計測して記録する（壁1面あたりの養生時間など）</span>
+        </li>
+        <li class="task-item" onclick="toggleTask(this)">
+          <div class="task-check"></div>
+          <span class="task-text">📝 今日の気づき・失敗・改善点をメモタブに記録する</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="daily-card">
+    <div class="daily-card-header">
+      <span class="card-phase-tag" style="background:#f5eed8;color:var(--gold)">今日の確認</span>
+      <span class="card-title">ミニクイズ</span>
+    </div>
+    <div class="daily-card-body">
+      <div class="quiz-section">
+        <p class="quiz-q">Q. 内装塗装でローラー塗りをする際、正しい塗り重ねの順序はどれ？</p>
+        <div class="quiz-options" id="quizOpts">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">①上塗り → 下地調整 → 下塗り</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">②下地調整 → 上塗り → 下塗り</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">③下地調整 → 下塗り → 上塗り</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">④下塗り → 上塗り → 下地調整</button>
+        </div>
+        <div class="quiz-result" id="quizResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="daily-card">
+    <div class="daily-card-header">
+      <span class="card-phase-tag" style="background:#daeada;color:var(--green)">職長マインド</span>
+      <span class="card-title">今日の一言</span>
+    </div>
+    <div class="daily-card-body">
+      <p style="font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;line-height:1.7;color:var(--ink)">
+        「職長は技術の見本である前に、<br>段取りと信頼の人間である」
+      </p>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">現場の段取り力・後輩への伝え方・施主への言葉遣い。技術と同じくらい大切なことを意識して一日を過ごそう。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="section" id="roadmap">
+  <p class="section-title">職長ロードマップ</p>
+  <p class="section-sub">4フェーズで着実に実力をつけていく</p>
+
+  <div class="phase-section">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--phase1)">1</div>
+      <div class="phase-info">
+        <h3>基礎習得フェーズ（〜1年目）</h3>
+        <p>技術と材料の徹底理解</p>
+      </div>
+    </div>
+    <div class="skill-item"><div class="skill-icon">🖌️</div><div class="skill-body"><h4>塗装の基本工程の習得</h4><p>下地調整→下塗り→上塗りの意味を理解し、なぜその順番かを説明できるようになる</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🧪</div><div class="skill-body"><h4>材料知識</h4><p>水性・油性・EP塗料の違い、パテ・シーラー・プライマーの用途を正確に把握</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🛡️</div><div class="skill-body"><h4>養生の精度を上げる</h4><p>マスキングテープの貼り方・剥がすタイミング・養生材の選び方を習得</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🔧</div><div class="skill-body"><h4>道具の手入れ・管理</h4><p>ローラー・刷毛・コテの洗い方・保管方法を完璧にする。道具を大切にする職人になる</p></div></div>
+    <div class="skill-item"><div class="skill-icon">📋</div><div class="skill-body"><h4>現場ルールの習得</h4><p>安全・清掃・報連相の基本。「言われる前にやる」習慣を作る</p></div></div>
+  </div>
+
+  <div class="phase-section">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--phase2)">2</div>
+      <div class="phase-info">
+        <h3>現場応用フェーズ（1〜2年目）</h3>
+        <p>段取り力と問題解決力</p>
+      </div>
+    </div>
+    <div class="skill-item"><div class="skill-icon">📐</div><div class="skill-body"><h4>数量計算・見積もり感覚</h4><p>部屋の面積計算、塗料の使用量計算（㎡あたりの缶数）を自分でできるようになる</p></div></div>
+    <div class="skill-item"><div class="skill-icon">⚡</div><div class="skill-body"><h4>段取り八分の実践</h4><p>前日に翌日の作業準備・材料確認・道具準備を終わらせる習慣。段取りが職長の核心</p></div></div>
+    <div class="skill-item"><div class="skill-icon">💬</div><div class="skill-body"><h4>施主・監督への報告</h4><p>「〜が完了しました」「〜に問題が出ました、対応は〜です」と結論から話せるようになる</p></div></div>
+    <div class="skill-item"><div class="skill-icon">⚠️</div><div class="skill-body"><h4>トラブル対応の学習</h4><p>塗膜のひび割れ・色むら・ダレの原因と対策。失敗事例をノートに記録する</p></div></div>
+    <div class="skill-item"><div class="skill-icon">👥</div><div class="skill-body"><h4>後輩への教え方の練習</h4><p>「背中で見せる」だけでなく言葉で説明できる技術。教えることで自分も深まる</p></div></div>
+  </div>
+
+  <div class="phase-section">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--phase3)">3</div>
+      <div class="phase-info">
+        <h3>管理力強化フェーズ（2〜3年目）</h3>
+        <p>チーム・工程・品質管理</p>
+      </div>
+    </div>
+    <div class="skill-item"><div class="skill-icon">📅</div><div class="skill-body"><h4>工程管理</h4><p>複数の職人がいる現場で誰が何をいつやるかを管理。工程表の読み方・作り方を習得</p></div></div>
+    <div class="skill-item"><div class="skill-icon">✅</div><div class="skill-body"><h4>品質チェックの習慣化</h4><p>仕上げ前に自分でチェックリストを使って確認。「自分が監督なら合格か」の目線を持つ</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🦺</div><div class="skill-body"><h4>安全管理の責任</h4><p>職長安全教育の受講。KY活動（危険予知）・TBM（ツールボックスミーティング）の進め方</p></div></div>
+    <div class="skill-item"><div class="skill-icon">💰</div><div class="skill-body"><h4>コスト意識</h4><p>材料のロスを最小化。残量管理・発注タイミング・廃棄塗料の削減を考える</p></div></div>
+    <div class="skill-item"><div class="skill-icon">📊</div><div class="skill-body"><h4>資格取得</h4><p>建築塗装技能士（2級→1級）・職長教育受講。資格が信頼の証になる</p></div></div>
+  </div>
+
+  <div class="phase-section">
+    <div class="phase-header">
+      <div class="phase-num" style="background:var(--phase4)">4</div>
+      <div class="phase-info">
+        <h3>職長実践フェーズ（3年目〜）</h3>
+        <p>現場を任される人間になる</p>
+      </div>
+    </div>
+    <div class="skill-item"><div class="skill-icon">👑</div><div class="skill-body"><h4>現場リーダーとしての立ち振る舞い</h4><p>朝礼の進行・TBMの実施・作業分担の指示を自信を持ってできる</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🤝</div><div class="skill-body"><h4>他業種との調整</h4><p>大工・電気・設備など他職人との工程調整と良好な関係構築</p></div></div>
+    <div class="skill-item"><div class="skill-icon">📝</div><div class="skill-body"><h4>書類・記録の管理</h4><p>施工記録・材料証明・検査書類の作成・保管。職長の責任業務</p></div></div>
+    <div class="skill-item"><div class="skill-icon">🌱</div><div class="skill-body"><h4>後輩の育成責任</h4><p>技術だけでなく職業観・誇りを伝える。将来の独立を見据えた人材育成の視点</p></div></div>
+  </div>
+</div>
+
+<!-- KNOWLEDGE -->
+<div class="section" id="knowledge">
+  <p class="section-title">必須知識ライブラリ</p>
+  <p class="section-sub">タップして詳細を確認</p>
+
+  <div class="knowledge-cat">
+    <h3>🧪 材料・塗料</h3>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>塗料の種類と使い分け</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>水性塗料（EP）</strong>：臭いが少なく内装メイン。乾燥が速い。水で希釈</li>
+          <li><strong>油性塗料</strong>：耐水性・耐久性が高い。溶剤で希釈。換気必須</li>
+          <li><strong>AEP（アクリルエマルジョン）</strong>：壁・天井の仕上げに多用。水性</li>
+          <li><strong>NAD塗料</strong>：非水分散型。耐水性があり水性の弱点を補う</li>
+          <li><strong>ウレタン塗料</strong>：木部仕上げ・床に使用。光沢があり耐久性高い</li>
+        </ul>
+      </div>
+    </div>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>下地調整材（パテ・シーラー）</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>パテ</strong>：凹凸・ひび割れの補修。乾燥後に研磨して平滑にする</li>
+          <li><strong>シーラー</strong>：吸込み止め・付着力向上のために塗る下塗り材</li>
+          <li><strong>プライマー</strong>：上塗りの密着性を高める下塗り。鉄部・木部に重要</li>
+          <li><strong>フィラー</strong>：厚みのある下地調整材。多少の凹凸も埋められる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>希釈率と塗布量の目安</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>水性塗料の希釈</strong>：製品により5〜15%が目安（必ずカタログ確認）</li>
+          <li><strong>塗布量</strong>：1缶（15〜16kg）でおよそ50〜70㎡が目安（1回塗り）</li>
+          <li><strong>注意</strong>：吸込みが多い下地は消費量が増える。余裕を見た計算を</li>
+          <li><strong>記録の重要性</strong>：現場ごとに実際の使用量を記録して感覚を養う</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-cat">
+    <h3>🛡️ 養生・道具</h3>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>養生の種類と使い分け</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>マスキングテープ</strong>：ラインを出す際に必須。剥がすタイミングは乾燥前</li>
+          <li><strong>養生テープ</strong>：ポリシートや布の固定に使用。粘着力が強め</li>
+          <li><strong>マスカー（養生シート付きテープ）</strong>：床・家具の広面積養生に効率的</li>
+          <li><strong>布マスカー</strong>：床の養生。滑り止め効果もあり安全</li>
+          <li><strong>ポイント</strong>：養生の丁寧さが仕上がりの差と職長の評価を決める</li>
+        </ul>
+      </div>
+    </div>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>ローラー・刷毛の選び方</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>毛丈短め（4mm）</strong>：平滑面・光沢仕上げに。模様がつきにくい</li>
+          <li><strong>毛丈長め（13mm〜）</strong>：凹凸面・砂骨ローラー。ゆず肌仕上げ</li>
+          <li><strong>刷毛の種類</strong>：筋交い刷毛（隅・細部）・平刷毛（広面積）</li>
+          <li><strong>手入れ</strong>：水性は水で洗い、毛先を整えて保管。油性は溶剤で洗う</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-cat">
+    <h3>⚠️ 安全・法令</h3>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>職長に必要な安全知識</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>職長教育</strong>：労働安全衛生法に基づく義務教育。職長になる前に受講</li>
+          <li><strong>KY活動</strong>：作業前の危険予知。今日の作業の危険を4ステップで考える</li>
+          <li><strong>TBM（ツールボックスミーティング）</strong>：朝礼で5分程度の安全確認</li>
+          <li><strong>有機溶剤作業主任者</strong>：油性塗料を扱う現場では必要な場合あり</li>
+          <li><strong>換気</strong>：密閉空間での塗装は中毒リスクあり。換気設備の確認を怠らない</li>
+        </ul>
+      </div>
+    </div>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>資格ロードマップ</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>建築塗装技能士2級</strong>：実務2年で受験可能。まず目指すべき資格</li>
+          <li><strong>建築塗装技能士1級</strong>：実務7年（2級取得後5年）。職長の信頼の証</li>
+          <li><strong>職長・安全衛生責任者教育</strong>：職長になるための法定教育（約14時間）</li>
+          <li><strong>有機溶剤作業主任者</strong>：溶剤塗料を扱う現場でのリーダーに必要</li>
+          <li><strong>足場作業主任者</strong>：将来の独立を見据えると取得しておくと強い</li>
+        </ul>
+      </div>
+    </div>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>トラブル原因と対処法</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>ダレ（垂れ）</strong>：塗りすぎ・希釈しすぎが原因。乾燥前に刷毛でならす</li>
+          <li><strong>色むら</strong>：ローラーの圧力不均一・乾燥中の塗り継ぎが原因。ウェット塗りで対応</li>
+          <li><strong>クラック（ひび割れ）</strong>：下地の動きや塗膜の厚塗りが原因。Vカット後にパテ処理</li>
+          <li><strong>密着不良・剥がれ</strong>：下地が汚れていた・シーラー省略が原因。下地処理を徹底</li>
+          <li><strong>記録の習慣</strong>：失敗したらすぐ原因・対処をノートに書く。同じ失敗を繰り返さない</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-cat">
+    <h3>💬 コミュニケーション</h3>
+    <div class="knowledge-item" onclick="toggleKnowledge(this)">
+      <div class="knowledge-item-header">
+        <h4>職長の報告・連絡・相談（報連相）</h4>
+        <span class="knowledge-toggle">▼</span>
+      </div>
+      <div class="knowledge-body">
+        <ul>
+          <li><strong>報告は結論から</strong>：「○○が完了しました」「○○の問題があり、△△で対処しました」</li>
+          <li><strong>悪い情報を早く伝える</strong>：問題を抱え込まない。早期報告が被害を最小化する</li>
+          <li><strong>施主への言葉遣い</strong>：「〜です」「〜いたします」。専門用語は分かりやすく言い換える</li>
+          <li><strong>監督・元請けとの関係</strong>：信頼は「約束を守ること」の積み重ね</li>
+          <li><strong>後輩への指導</strong>：怒鳴らない。「なぜそうするのか」の理由を必ず伝える</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div class="section" id="notes">
+  <p class="section-title">現場メモ</p>
+  <p class="section-sub">気づき・失敗・学び・質問を記録しよう</p>
+
+  <div class="note-area">
+    <div class="note-area-header">
+      <span>📝 今日のメモを書く</span>
+      <span id="noteDate" style="color:var(--muted);font-weight:400"></span>
+    </div>
+    <textarea class="note-textarea" id="noteInput" placeholder="例）・今日は水性塗料の希釈を10%でやったら少し薄かった&#10;・先輩に養生テープの剥がしタイミングを教わった（半乾きのとき）&#10;・朝礼で自分から挨拶できた"></textarea>
+    <button class="note-save-btn" onclick="saveNote()">メモを保存する</button>
+  </div>
+
+  <div class="saved-notes" id="savedNotes">
+    <p class="section-title" style="font-size:14px;margin-bottom:8px">過去のメモ</p>
+    <div id="notesList"></div>
+  </div>
+</div>
+
+<!-- STRATEGY -->
+<div class="section" id="strategy">
+  <p class="section-title">成長戦略マップ</p>
+  <p class="section-sub">自分だけのキャリア設計図</p>
+
+  <!-- TIMELINE -->
+  <div class="strat-timeline">
+
+    <div class="strat-phase sp1">
+      <div class="strat-phase-head">
+        <div class="strat-num">①</div>
+        <div class="strat-phase-info">
+          <h3>信頼構築フェーズ</h3>
+          <span class="strat-period">最初の半年〜1年</span>
+        </div>
+      </div>
+      <div class="strat-goal-tag">🎯 目標：キーパーソンから信頼を得る</div>
+      <div class="strat-people">
+        <span class="person-badge">たくやさん</span>
+        <span class="person-badge">たすくさん</span>
+        <span class="person-badge">こうじさん</span>
+      </div>
+      <div class="strat-actions">
+        <div class="strat-action-item">
+          <div class="strat-action-icon">📓</div>
+          <div>
+            <strong>メモを取り、ためになる情報を吸収する</strong>
+            <p>聞いたことを記録し、実際の行動に落とし込む。知識を持っている人間として認識されることが第一歩。</p>
+          </div>
+        </div>
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🗣️</div>
+          <div>
+            <strong>個人に話を聞きにいき、実行する</strong>
+            <p>アドバイスをもらったら必ず実行する。ただし一気にやりすぎず、冷静・着実に継続すること。やりすぎると不自然になり、逆に不信につながる。</p>
+          </div>
+        </div>
+        <div class="strat-action-item warning-item">
+          <div class="strat-action-icon">⚠️</div>
+          <div>
+            <strong>注意：継続しない約束はしない</strong>
+            <p>一度やって終わりは最悪。言ったことをやり続けることで信頼が積み上がる。できることだけを約束する。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strat-arrow">↓</div>
+
+    <div class="strat-phase sp2">
+      <div class="strat-phase-head">
+        <div class="strat-num">②</div>
+        <div class="strat-phase-info">
+          <h3>チーム形成フェーズ</h3>
+          <span class="strat-period">半年〜1年の間に並行して</span>
+        </div>
+      </div>
+      <div class="strat-goal-tag">🎯 目標：若手と交流し「2軍チーム」を作る</div>
+      <div class="strat-actions">
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🔍</div>
+          <div>
+            <strong>本人のやる気と得意を見抜く</strong>
+            <p>やる気が上がるように仕向け、得意なことは会社全体にわかるよう伝えていく。評価を上げて、本人が認められる状況を作る。</p>
+          </div>
+        </div>
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🏆</div>
+          <div>
+            <strong>目に見える貢献を演出する</strong>
+            <p>チームが頑張っていることを可視化する。当人たちの評価も上げながら、チームとしての雰囲気を作っていく。</p>
+          </div>
+        </div>
+        <div class="strat-action-item">
+          <div class="strat-action-icon">📋</div>
+          <div>
+            <strong>具体的な目標を設定する</strong>
+            <p>「なんとなく頑張る」ではなく、達成できる具体的な目標を一緒に作る。達成体験が次のやる気につながる。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strat-arrow">↓</div>
+
+    <div class="strat-phase sp3">
+      <div class="strat-phase-head">
+        <div class="strat-num">③</div>
+        <div class="strat-phase-info">
+          <h3>職長フェーズ</h3>
+          <span class="strat-period">現場の実績を積む</span>
+        </div>
+      </div>
+      <div class="strat-goal-tag">🎯 目標：顔を覚えられ・信頼関係を作る</div>
+      <div class="strat-people">
+        <span class="person-badge ext">イワサさん</span>
+        <span class="person-badge ext">平岩さん</span>
+        <span class="person-badge ext">他の職長たち</span>
+        <span class="person-badge ext">ゼネコンの人達</span>
+      </div>
+      <div class="strat-actions">
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🏗️</div>
+          <div>
+            <strong>仕事で結果を出すことが大前提</strong>
+            <p>まず職長の仕事をできるようになる。実際になる前に職長についていき、1日の流れ・動き・やるべきことを徹底的に観察して把握しておく。</p>
+          </div>
+        </div>
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🤝</div>
+          <div>
+            <strong>率先的に話しかけ関係を作る</strong>
+            <p>人柄だけでなく、実績のある人間として覚えてもらう。信頼関係を作ることも仕事のうちと意識する。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strat-arrow">↓</div>
+
+    <div class="strat-phase sp4">
+      <div class="strat-phase-head">
+        <div class="strat-num">④</div>
+        <div class="strat-phase-info">
+          <h3>スーパー職長フェーズ</h3>
+          <span class="strat-period">最終目標</span>
+        </div>
+      </div>
+      <div class="strat-goal-tag">🎯 目標：自分自身の価値を高める</div>
+      <div class="strat-actions">
+        <div class="strat-action-item">
+          <div class="strat-action-icon">👑</div>
+          <div>
+            <strong>会社のマネージャーとしての役割を担う</strong>
+            <p>技術・信頼・チームマネジメント・外部関係。すべてが揃ったとき、スーパー職長として認められる存在になる。</p>
+          </div>
+        </div>
+        <div class="strat-action-item">
+          <div class="strat-action-icon">🌱</div>
+          <div>
+            <strong>将来の独立を見据えた価値の積み上げ</strong>
+            <p>工業高校卒業生が活躍できる会社を作る、という最終目標を忘れない。今の行動はすべてそこへつながっている。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SELF CHECK -->
+  <div class="strat-check-section">
+    <h3 class="strat-check-title">📌 今週の戦略チェック</h3>
+    <ul class="strat-check-list" id="stratCheckList">
+      <li class="strat-check-item" onclick="toggleStratCheck(this)">
+        <div class="task-check"></div>
+        <span class="task-text">キーパーソン（たくや・たすく・こうじさん）のうち1人に話しかけに行った</span>
+      </li>
+      <li class="strat-check-item" onclick="toggleStratCheck(this)">
+        <div class="task-check"></div>
+        <span class="task-text">先週もらったアドバイスを1つ実行し続けている</span>
+      </li>
+      <li class="strat-check-item" onclick="toggleStratCheck(this)">
+        <div class="task-check"></div>
+        <span class="task-text">若手メンバーの1人の「得意なこと」を1つ発見できた</span>
+      </li>
+      <li class="strat-check-item" onclick="toggleStratCheck(this)">
+        <div class="task-check"></div>
+        <span class="task-text">職長の動きを観察し、気づいたことをメモした</span>
+      </li>
+      <li class="strat-check-item" onclick="toggleStratCheck(this)">
+        <div class="task-check"></div>
+        <span class="task-text">自分の仕事で「目に見える貢献」を1つ作れた</span>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+// ===== localStorage (Safari永続保存対応) =====
+function lsGet(key, def) {
+  try { var v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+function loadAll() {
+  streak = lsGet('shocho_streak', 1);
+  var lastVisit = lsGet('shocho_lastVisit', today);
+  tasks  = lsGet('shocho_tasks', {});
+  notes  = lsGet('shocho_notes', []);
+
+  if (lastVisit !== today) {
+    try {
+      var diff = Math.floor((new Date(today) - new Date(lastVisit)) / 86400000);
+      streak = diff === 1 ? streak + 1 : 1;
+    } catch(e) { streak = 1; }
+    lsSet('shocho_streak', streak);
+    lsSet('shocho_lastVisit', today);
+  }
+
+  init();
+}
+
+function saveTasks() { lsSet('shocho_tasks', tasks); }
+function saveNotes() { lsSet('shocho_notes', notes); }
+
+// ===== INIT (データ読み込み後に呼ばれる) =====
+function init() {
+  document.getElementById('streakNum').textContent = streak;
+
+  try {
+    const todayStr = new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+    document.getElementById('todayDate').textContent = todayStr;
+    document.getElementById('noteDate').textContent = new Date().toLocaleDateString('ja-JP', { month:'short', day:'numeric' });
+  } catch(e) {}
+
+  // タスク状態を復元
+  document.querySelectorAll('.task-item').forEach(function(item, i) {
+    if (tasks['task_' + today + '_' + i]) item.classList.add('done');
+  });
+
+  // 戦略チェック復元
+  document.querySelectorAll('.strat-check-item').forEach(function(item, i) {
+    if (tasks['strat_week_' + i]) item.classList.add('done');
+  });
+
+  updateProgress();
+  renderNotes();
+}
+
+// 起動
+loadAll();
+
+// ===== FUNCTIONS =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+  var sec = document.getElementById(id);
+  var tab = document.getElementById('tab-' + id);
+  if (sec) sec.classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+
+function toggleTask(el) {
+  el.classList.toggle('done');
+  document.querySelectorAll('.task-item').forEach(function(item, i) {
+    tasks['task_' + today + '_' + i] = item.classList.contains('done');
+  });
+  saveTasks();
+  updateProgress();
+}
+
+
+function updateProgress() {
+  var items = document.querySelectorAll('.task-item');
+  var done = 0;
+  items.forEach(function(i) { if (i.classList.contains('done')) done++; });
+  var pct = items.length ? Math.round((done / items.length) * 100) : 0;
+  var fill = document.getElementById('progressFill');
+  var pctEl = document.getElementById('progressPct');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+
+function answerQuiz(btn, correct) {
+  document.querySelectorAll('.quiz-opt').forEach(function(o) { o.disabled = true; });
+  var result = document.getElementById('quizResult');
+  if (!result) return;
+  if (correct) {
+    btn.classList.add('correct');
+    result.className = 'quiz-result show ok';
+    result.textContent = '正解！　下地調整（パテ・シーラー）→ 下塗り → 上塗りの順番が基本です。各工程の乾燥時間を守ることが仕上がりのカギです。';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(function(o) {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').indexOf('true') !== -1) o.classList.add('correct');
+    });
+    result.className = 'quiz-result show ng';
+    result.textContent = '惜しい！　正解は「下地調整 → 下塗り → 上塗り」です。次の現場で意識してみよう！';
+  }
+}
+
+function toggleKnowledge(el) {
+  el.classList.toggle('open');
+}
+
+function saveNote() {
+  var text = document.getElementById('noteInput').value.trim();
+  if (!text) return;
+  var note = {
+    text: text,
+    date: new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+  };
+  notes.unshift(note);
+  saveNotes();
+  document.getElementById('noteInput').value = '';
+  renderNotes();
+}
+
+function renderNotes() {
+  var list = document.getElementById('notesList');
+  if (!list) return;
+  if (!notes.length) {
+    list.innerHTML = '<div class="empty-state">まだメモがありません。<br>今日の気づきを記録してみよう！</div>';
+    return;
+  }
+  list.innerHTML = notes.map(function(n) {
+    return '<div class="saved-note-item"><div class="saved-note-meta">📅 ' + n.date + '</div><div class="saved-note-text">' + escHtml(n.text) + '</div></div>';
+  }).join('');
+}
+
+function toggleStratCheck(el) {
+  el.classList.toggle('done');
+  document.querySelectorAll('.strat-check-item').forEach(function(item, i) {
+    tasks['strat_week_' + i] = item.classList.contains('done');
+  });
+  saveTasks();
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
